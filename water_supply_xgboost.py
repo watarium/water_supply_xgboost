@@ -32,21 +32,21 @@ grid = GSfit(params)
 grid_best_params = grid.best_params_
 grid_scores_df = pd.DataFrame(grid.cv_results_)
 
-# best n by CV
+# Best n by CV
 cv=xgb.cv(grid_best_params, dtrain, num_boost_round=200, nfold=3)
 n_best = cv[cv['test-rmse-mean'] == cv['test-rmse-mean'].min()]['test-rmse-mean'].index[0]
 grid_best_params['n_estimators'] = n_best + 1
 
-# fit by best params
+# Fit by best params
 regressor = xgb.XGBRegressor(learning_rate=grid_best_params['learning_rate'],
                              max_depth=grid_best_params['max_depth'],
                              n_estimators=grid_best_params['n_estimators'])
 regressor.fit(X_train_validate, y_train_validate, verbose=False)
 
-# save model
+# Save model
 pickle.dump(regressor, open('water_supply.pkl', 'wb'))
 
-# prediction
+# Prediction
 result = regressor.predict(X_test)
 X_test['water_pred'] = result
 
