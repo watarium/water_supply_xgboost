@@ -21,6 +21,7 @@ params = {
     'max_depth': list(np.arange(3, 11, 1))
 }
 
+# Fit for Grid search
 def GSfit(params):
     regressor = xgb.XGBRegressor(n_estimators=100)
     grid = GridSearchCV(regressor, params, cv=3, fit_params=fit_params, scoring='neg_mean_squared_error', verbose=2, return_train_score=True)
@@ -32,7 +33,7 @@ grid = GSfit(params)
 grid_best_params = grid.best_params_
 grid_scores_df = pd.DataFrame(grid.cv_results_)
 
-# Best n by CV
+# Best n by Cross Validation
 cv=xgb.cv(grid_best_params, dtrain, num_boost_round=200, nfold=3)
 n_best = cv[cv['test-rmse-mean'] == cv['test-rmse-mean'].min()]['test-rmse-mean'].index[0]
 grid_best_params['n_estimators'] = n_best + 1
