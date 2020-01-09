@@ -17,8 +17,8 @@ fit_params = {
 
 # Range of grid search
 params = {
-    'learning_rate': list(np.arange(0.05, 0.41, 0.05)),
-    'max_depth': list(np.arange(3, 11, 1))
+    'learning_rate': list(np.arange(0.05, 0.61, 0.05)),
+    'max_depth': list(np.arange(1, 16, 1))
 }
 
 # Fit for Grid search
@@ -48,7 +48,8 @@ regressor.fit(X_train_validate, y_train_validate, verbose=False)
 pickle.dump(regressor, open('water_supply.pkl', 'wb'))
 
 # Prediction
-result = regressor.predict(X_test)
-X_test['water_pred'] = result
-
-df.to_csv('water_supply_pred.csv')
+for hour in range(1,24):
+    for temperature in range(5,40):
+        input = pd.DataFrame([[hour, temperature]], columns=['hour', 'temperature'])
+        result = regressor.predict(input)
+        print('Hour: ' + str(hour) + '  Temperature: ' + str(temperature) + '  Prediction: ' + str(result[0]))
